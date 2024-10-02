@@ -51,7 +51,7 @@ const loader = new THREE.GLTFLoader();
 const group = new THREE.Group();
 
 loader.load(
-  "/models/excavator.glb",
+  "/models/truck.glb",
   function (gltf) {
     const model = gltf.scene;
 
@@ -77,7 +77,7 @@ loader.load(
         });
 
         // Highlight the mesh by changing its material color
-        //node.material.color.set(Math.random() * 0xffffff); // Random color for each part
+        node.material.color.set(Math.random() * 0xffffff); // Random color for each part
       }
     });
 
@@ -85,6 +85,7 @@ loader.load(
 
     // Calculate the bounding box of the model
     const box = new THREE.Box3().setFromObject(model);
+    const road_with = 244; //cm
     const width = box.max.x - box.min.x;
     const height = box.max.y - box.min.y;
     const depth = box.max.z - box.min.z;
@@ -109,7 +110,8 @@ loader.load(
     ); // Red for width
 
     createTextLabel(
-      `${width.toFixed(2) * 10} cm`,
+      //`${width.toFixed(2) * 10} cm`,
+      `2.44 m`,
       new THREE.Vector3(box.max.x, box.min.y, box.min.z)
         .clone()
         .add(new THREE.Vector3(-box.max.x * 0.5, 0.05, 0)),
@@ -126,7 +128,7 @@ loader.load(
     ); // Green for height
 
     createTextLabel(
-      `${height.toFixed(2) * 10} cm`,
+      `${((height * 2.44 * 10) / 7.3).toFixed(2)} m`,
       new THREE.Vector3(box.min.x, box.getCenter().y, box.min.z)
         .clone()
         .add(new THREE.Vector3(0, 0, 0.05)),
@@ -143,7 +145,7 @@ loader.load(
     ); // Blue for depth
 
     createTextLabel(
-      `${depth.toFixed(2) * 10} cm`,
+      `${((depth * 2.44 * 10) / 7.3).toFixed(2)} m`,
       new THREE.Vector3(box.min.x, box.min.y, box.getCenter().z)
         .clone()
         .add(new THREE.Vector3(0, 0.05, 0)),
