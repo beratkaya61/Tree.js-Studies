@@ -76,115 +76,20 @@ loader.load(
           roughness: 0.1, // Control roughness
         });
 
+        console.log("material name : ", node);
+
         // Highlight the mesh by changing its material color
         node.material.color.set(Math.random() * 0xffffff); // Random color for each part
       }
     });
 
-    ///******************************************************************** */
-
     // Calculate the bounding box of the model
     const box = new THREE.Box3().setFromObject(model);
-    const road_with = 244; //cm
-    const width = box.max.x - box.min.x;
-    const height = box.max.y - box.min.y;
-    const depth = box.max.z - box.min.z;
 
     // Position arrows at the ends of the bounding box
-
     const _position = new THREE.Vector3(box.min.x, box.min.y, box.min.z);
 
-    function createLine(start, end, color) {
-      const points = [start, end];
-      const geometry = new THREE.BufferGeometry().setFromPoints(points);
-      const material = new THREE.LineBasicMaterial({ color: color });
-      return new THREE.Line(geometry, material);
-    }
-
-    ///***************************************************************** */
-    // Create lines for each dimension
-    const lineX = createLine(
-      new THREE.Vector3(box.min.x, box.min.y, box.min.z),
-      new THREE.Vector3(box.max.x, box.min.y, box.min.z),
-      0xff0000
-    ); // Red for width
-
-    createTextLabel(
-      //`${width.toFixed(2) * 10} cm`,
-      `2.44 m`,
-      new THREE.Vector3(box.max.x, box.min.y, box.min.z)
-        .clone()
-        .add(new THREE.Vector3(-box.max.x * 0.5, 0.05, 0)),
-      0xff0000,
-      [false, false, false],
-      [0, Math.PI, 0]
-    );
-
-    ////******************************************************************* */
-    const lineY = createLine(
-      new THREE.Vector3(box.min.x, box.min.y, box.min.z),
-      new THREE.Vector3(box.min.x, box.max.y, box.min.z),
-      0x00ff00
-    ); // Green for height
-
-    createTextLabel(
-      `${((height * 2.44 * 10) / 7.3).toFixed(2)} m`,
-      new THREE.Vector3(box.min.x, box.getCenter().y, box.min.z)
-        .clone()
-        .add(new THREE.Vector3(0, 0, 0.05)),
-      0x00ff00,
-      [false, false, false],
-      [0, -Math.PI / 2, 0]
-    );
-
-    ///*********************************************************************** */
-    const lineZ = createLine(
-      new THREE.Vector3(box.min.x, box.min.y, box.min.z),
-      new THREE.Vector3(box.min.x, box.min.y, box.max.z),
-      0x0000ff
-    ); // Blue for depth
-
-    createTextLabel(
-      `${((depth * 2.44 * 10) / 7.3).toFixed(2)} m`,
-      new THREE.Vector3(box.min.x, box.min.y, box.getCenter().z)
-        .clone()
-        .add(new THREE.Vector3(0, 0.05, 0)),
-      0x0000ff,
-      [true, false, true],
-      [0, Math.PI / 2, 0]
-    );
-
-    scene.add(lineX);
-    scene.add(lineY);
-    scene.add(lineZ);
-
-    // Create ArrowHelpers
-    // const arrowX = new THREE.ArrowHelper(
-    //   new THREE.Vector3(1, 0, 0),
-    //   _position,
-    //   width,
-    //   0xff0000
-    // ); // Red for width
-
-    // const arrowY = new THREE.ArrowHelper(
-    //   new THREE.Vector3(0, 1, 0),
-    //   _position,
-    //   height,
-    //   0x00ff00
-    // ); // Green for height
-
-    // const arrowZ = new THREE.ArrowHelper(
-    //   new THREE.Vector3(0, 0, 1),
-    //   _position,
-    //   depth,
-    //   0x0000ff
-    // ); // Blue for depth
-
-    // scene.add(arrowX);
-    // scene.add(arrowY);
-    // scene.add(arrowZ);
-
-    ///******************************************************************** */
+    calculateDimensions(box);
 
     group.add(model);
 
@@ -226,6 +131,102 @@ function createTextLabel(text, position, color, mirror, rotate) {
       console.error("Error loading fontttt:", error);
     }
   );
+}
+
+function createLine(start, end, color) {
+  const points = [start, end];
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  const material = new THREE.LineBasicMaterial({ color: color });
+  return new THREE.Line(geometry, material);
+}
+
+function calculateDimensions(box) {
+  const width = box.max.x - box.min.x;
+  const height = box.max.y - box.min.y;
+  const depth = box.max.z - box.min.z;
+
+  ///***************************************************************** */
+  // Create lines for each dimension
+  const lineX = createLine(
+    new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+    new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+    0xff0000
+  ); // Red for width
+
+  createTextLabel(
+    //`${width.toFixed(2) * 10} cm`,
+    `2.44 m`,
+    new THREE.Vector3(box.max.x, box.min.y, box.min.z)
+      .clone()
+      .add(new THREE.Vector3(-box.max.x * 0.5, 0.05, 0)),
+    0xff0000,
+    [false, false, false],
+    [0, Math.PI, 0]
+  );
+
+  ////******************************************************************* */
+  const lineY = createLine(
+    new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+    new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+    0x00ff00
+  ); // Green for height
+
+  createTextLabel(
+    `${((height * 2.44 * 10) / 7.3).toFixed(2)} m`,
+    new THREE.Vector3(box.min.x, box.getCenter().y, box.min.z)
+      .clone()
+      .add(new THREE.Vector3(0, 0, 0.05)),
+    0x00ff00,
+    [false, false, false],
+    [0, -Math.PI / 2, 0]
+  );
+
+  ///*********************************************************************** */
+  const lineZ = createLine(
+    new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+    new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+    0x0000ff
+  ); // Blue for depth
+
+  createTextLabel(
+    `${((depth * 2.44 * 10) / 7.3).toFixed(2)} m`,
+    new THREE.Vector3(box.min.x, box.min.y, box.getCenter().z)
+      .clone()
+      .add(new THREE.Vector3(0, 0.05, 0)),
+    0x0000ff,
+    [true, false, true],
+    [0, Math.PI / 2, 0]
+  );
+
+  scene.add(lineX);
+  scene.add(lineY);
+  scene.add(lineZ);
+
+  // Create ArrowHelpers
+  // const arrowX = new THREE.ArrowHelper(
+  //   new THREE.Vector3(1, 0, 0),
+  //   _position,
+  //   width,
+  //   0xff0000
+  // ); // Red for width
+
+  // const arrowY = new THREE.ArrowHelper(
+  //   new THREE.Vector3(0, 1, 0),
+  //   _position,
+  //   height,
+  //   0x00ff00
+  // ); // Green for height
+
+  // const arrowZ = new THREE.ArrowHelper(
+  //   new THREE.Vector3(0, 0, 1),
+  //   _position,
+  //   depth,
+  //   0x0000ff
+  // ); // Blue for depth
+
+  // scene.add(arrowX);
+  // scene.add(arrowY);
+  // scene.add(arrowZ);
 }
 
 // Camera position
