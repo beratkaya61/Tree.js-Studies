@@ -1,6 +1,7 @@
 # Tree.js-Studies
 
 run server with "node server.js"
+view your result on http://localhost:3000
 
 # error and solving method
 
