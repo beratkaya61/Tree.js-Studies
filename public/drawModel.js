@@ -62,28 +62,22 @@ loader.load(
     model.position.set(0, 0.5, 0); // Adjust position over grid to avoid clipping
     model.scale.set(2, 2, 2); // Adjust scale if needed
 
-    //Apply high-quality materials
+    // Apply high-quality materials
     model.traverse(function (node) {
       if (node.isMesh) {
-        // Adjust wireframe color by creating a new material
-        //(shaded wireframe)
         node.material = new THREE.MeshStandardMaterial({
-          color: 0x999999, // 0xffffff
-          //wireframe: true,
-          alphaTest: 0.5, // Discard pixels with alpha < 0.5
-          transparent: true, // Optional: Allows for handling of transparent textures
-          side: THREE.DoubleSide, // Render both sides (optional)
-          opacity: 0.5, // Set transparency
-          wireframeLinewidth: 50, //Control wireframe line thickness
-          //flatShading: true, // Optionally use flat shading
-          metalness: 0.5, // For shininess
-          roughness: 0.1, // Control roughness
+          color: 0x999999,
+          alphaTest: 0.5,
+          transparent: false,
+          side: THREE.DoubleSide,
+          opacity: 0.5,
+          metalness: 0.5,
+          roughness: 0.1,
         });
 
-        console.log("material name : ", node);
-
-        // Highlight the mesh by changing its material color
-        node.material.color.set(Math.random() * 0xffffff); // Random color for each part
+        // Enable shadows for the mesh
+        node.castShadow = true;
+        node.receiveShadow = true;
       }
     });
 
@@ -106,6 +100,19 @@ loader.load(
     console.error("Error loading model:", error);
   }
 );
+
+// Enable shadows in the renderer
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Optional: for softer shadows
+
+// Add ground plane to receive shadows
+const groundGeometry = new THREE.PlaneGeometry(6, 6);
+const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = 0;
+ground.receiveShadow = true;
+group.add(ground);
 
 // Function to create a text label
 function createTextLabel(text, position, color, mirror, rotate) {
@@ -258,7 +265,7 @@ const gridHelper = new THREE.GridHelper(
 );
 group.add(gridHelper);
 
-// Add ground plane
+// ----------------- Add ground plane  --------------------
 // const groundGeometry = new THREE.PlaneGeometry(6, 6); // Create a plane geometry (6x6 units)
 // const groundMaterial = new THREE.MeshStandardMaterial();
 // const ground = new THREE.Mesh(groundGeometry, groundMaterial);
@@ -270,7 +277,7 @@ function animate() {
   requestAnimationFrame(animate);
   // Update the controls for damping to work
   controls.update();
-  //group.rotation.y += 0.01; //rotate group(rotate model,ground,gridHelper vs.)
+  //scene.rotation.y += 0.01; //rotate group(rotate model,ground,gridHelper vs.)
   renderer.render(scene, camera);
 }
 
