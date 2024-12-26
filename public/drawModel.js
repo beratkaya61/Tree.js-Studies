@@ -32,17 +32,21 @@ scene.add(directionalLight);
 const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Adjust intensity as needed
 scene.add(ambientLight);
 
-//for draw shere on screen
-// const geometry = new THREE.SphereGeometry(2, 32, 32);
-// const material = new THREE.MeshStandardMaterial({
-//   color: 0x888888,
-//   transparent: true,
-//   opacity: 0.5, // Set transparency
-//   metalness: 0.7,
-//   roughness: 0.2,
-// });
-// const sphere = new THREE.Mesh(geometry, material);
-// scene.add(sphere);
+//for draw sphere on screen with increased radius
+const geometry = new THREE.SphereGeometry(2.5, 32, 32); // Increased radius to 2.5
+const material = new THREE.MeshStandardMaterial({
+  color: 0x888888,
+  transparent: true,
+  opacity: 0.5, // Set transparency
+  metalness: 0.7,
+  roughness: 0.2,
+});
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+// Adjust the position and scale of the sphere to cover the model
+sphere.position.set(0, 0.5, 0); // Adjust position to match the model's position
+sphere.scale.set(2, 2, 2); // Adjust scale to cover the model
 
 // Load GLB model
 const loader = new THREE.GLTFLoader();
