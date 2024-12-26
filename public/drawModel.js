@@ -18,6 +18,10 @@ renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
 renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 2.0; // Adjust exposure (default is 1.0)
 
+// Enable shadows in the renderer
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Optional: for softer shadows
+
 // Set background color
 renderer.setClearColor(0x95b7b7); // Blue background
 
@@ -26,6 +30,11 @@ document.body.appendChild(renderer.domElement);
 // Directional light (simulates sunlight)
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 10, 7).normalize(); // Position light above and to the side
+directionalLight.castShadow = true; // Enable shadow casting for the light
+directionalLight.shadow.mapSize.width = 2048; // Set shadow map size
+directionalLight.shadow.mapSize.height = 2048; // Set shadow map size
+directionalLight.shadow.camera.near = 0.5; // Set shadow camera near value
+directionalLight.shadow.camera.far = 50; // Set shadow camera far value
 scene.add(directionalLight);
 
 // Ambient light (softens shadows and ensures no part is too dark)
@@ -42,6 +51,8 @@ const material = new THREE.MeshStandardMaterial({
   roughness: 0.2,
 });
 const sphere = new THREE.Mesh(geometry, material);
+sphere.castShadow = true; // Enable shadow casting for the sphere
+sphere.receiveShadow = true; // Enable shadow receiving for the sphere
 scene.add(sphere);
 
 // Adjust the position and scale of the sphere to cover the model
@@ -106,13 +117,13 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Optional: for softer shadows
 
 // Add ground plane to receive shadows
-const groundGeometry = new THREE.PlaneGeometry(6, 6);
-const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+const groundGeometry = new THREE.PlaneGeometry(50, 50);
+const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = 0;
-ground.receiveShadow = true;
-group.add(ground);
+ground.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
+ground.position.y = -2.5; // Position the ground below the sphere
+ground.receiveShadow = true; // Enable shadow receiving for the ground
+scene.add(ground);
 
 // Function to create a text label
 function createTextLabel(text, position, color, mirror, rotate) {
