@@ -89,6 +89,7 @@ loader.load(
           roughness: 0.1, // Control roughness
         });
 
+        //node.material.color.set(Math.random() * 0xffffff); // Random color for each part
         // Enable shadows for the mesh
         node.castShadow = true;
         node.receiveShadow = true;
@@ -320,6 +321,20 @@ document.addEventListener("keydown", (event) => {
     case "s": // Move down
       camera.position.y -= moveSpeed;
       break;
+    case "1": // Change color to red
+      sphere.material.color.set(0xff0000);
+      break;
+    case "2": // Change color to green
+      sphere.material.color.set(0x00ff00);
+      break;
+    case "3": // Change color to blue
+      sphere.material.color.set(0x0000ff);
+      break;
+    case "4": // Change color to yellow
+      sphere.material.color.set(0xffff00);
+      break;
+    case "5": // Change color to purple
+      sphere.material.color.set(0x800080);
   }
 });
 
