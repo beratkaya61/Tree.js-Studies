@@ -77,13 +77,16 @@ loader.load(
     model.traverse(function (node) {
       if (node.isMesh) {
         node.material = new THREE.MeshStandardMaterial({
-          color: 0x999999,
-          alphaTest: 0.5,
-          transparent: false,
-          side: THREE.DoubleSide,
-          opacity: 0.5,
-          metalness: 0.5,
-          roughness: 0.1,
+          color: 0x999999, // 0xffffff
+          //wireframe: true,
+          alphaTest: 0.5, // Discard pixels with alpha < 0.5
+          transparent: true, // Optional: Allows for handling of transparent textures
+          side: THREE.DoubleSide, // Render both sides (optional)
+          opacity: 0.5, // Set transparency
+          wireframeLinewidth: 50, //Control wireframe line thickness
+          //flatShading: true, // Optionally use flat shading
+          metalness: 0.5, // For shininess
+          roughness: 0.1, // Control roughness
         });
 
         // Enable shadows for the mesh
